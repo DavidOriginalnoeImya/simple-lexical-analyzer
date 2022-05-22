@@ -1,11 +1,11 @@
-import ver3.LexicalAnalyzer;
-import ver3.pair.Lexeme;
+import lexicalanalyzer.LexicalAnalyzer;
+import lexicalanalyzer.pair.Lexeme;
+import syntacticanalyzer.SyntacticAnalyzer;
+import syntacticanalyzer.SyntaxError;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainClass {
 
@@ -31,7 +31,16 @@ public class MainClass {
         List<Lexeme> lexemes = lexicalAnalyzer.getLexemes(fileContent);
 
         for (Lexeme lexeme: lexemes) {
-            System.out.println(lexeme.getLexeme());
+            System.out.println(lexeme.getLexeme().split(":")[1].trim());
+        }
+
+        SyntacticAnalyzer syntacticAnalyzer = new SyntacticAnalyzer(new ArrayDeque<>(lexemes));
+
+        try {
+            syntacticAnalyzer.analyze();
+        }
+        catch (SyntaxError e) {
+            System.out.println(e.getMessage());
         }
     }
 }

@@ -1,20 +1,5 @@
-public class TestClass {
-    public static void main(String    [] args) {
-        int x = 10;
-        String str123dwa = "dwadwa-q0-1231&&@7337131````d/ad/w";
+class TestClass {
+    void func(int x, int y,) {
 
-        for (int index=0; index<10; ++index) {
-            x = index / 2;
-
-            if (index<=9) {
-                x = x + index;
-            }
-
-            if (index==9) {
-                x = x + index - 1;
-            }
-        }
-            "123"123
-        double doub_num = .54345;
     }
 }

@@ -1,4 +1,4 @@
-package ver3.pair;
+package lexicalanalyzer.pair;
 
 public class Lexeme {
     private Integer start = 0, end = 0;
