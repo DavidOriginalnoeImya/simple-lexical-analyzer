@@ -28,9 +28,7 @@ public class LexicalAnalyzer {
                 Matcher matcher = pattern.matcher(sourceCode);
 
                 while (matcher.find()) {
-                    lexemes.add(getLexemeAddPos(matcher.end()),
-                            new Lexeme(matcher.start(), matcher.end(),
-                                    matcher.group().trim() + " : " + entry.getKey()));
+                    lexemes.add(getLexemeAddPos(matcher.end()), new Lexeme(matcher.start(), matcher.end(), entry.getKey()));
                     sourceCode = sourceCode.substring(0, matcher.start()) +
                             Character.toString((char)0).repeat(matcher.end() - matcher.start()) +
                             sourceCode.substring(matcher.end());

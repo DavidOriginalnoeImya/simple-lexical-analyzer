@@ -1,5 +1,5 @@
 class TestClass {
-    void func(int x, int y,) {
+    void func(int x) {
 
     }
 }

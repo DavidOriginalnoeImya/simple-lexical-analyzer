@@ -9,6 +9,8 @@ import java.util.List;
 public class SyntacticAnalyzer {
     private Deque<Lexeme> lexemes;
 
+    private String nextLexeme = "";
+
     public SyntacticAnalyzer(Deque<Lexeme> lexemes) {
         this.lexemes = lexemes;
     }
@@ -20,13 +22,20 @@ public class SyntacticAnalyzer {
     private void classAnalyzer() throws SyntaxError {
         String errorMessage = "Ошибка синтаксиса класса";
 
-        if ("class".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-            if ("идентификатор".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                if ("{".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                    classBodyAnalyzer();
+        nextLexeme = getNextLexeme();
 
-                    if (!"}".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                        throw new SyntaxError(errorMessage + 4);
+        if ("class".equals(nextLexeme)) {
+            nextLexeme = getNextLexeme();
+
+            if ("идентификатор".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+
+                if ("{".equals(nextLexeme)) {
+
+                    methodAnalyzer();
+
+                    if (!"}".equals(nextLexeme)) {
+                        throw new SyntaxError(errorMessage);
                     }
                 }
                 else {
@@ -42,82 +51,89 @@ public class SyntacticAnalyzer {
         }
     }
 
-    private void classBodyAnalyzer() throws SyntaxError {
-        String errorMessage = "Ошибка синтаксиса тела класса";
-
-        if ("идентификатор типа".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-            if ("идентификатор".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                Lexeme currentLexeme = getNextLexeme();
-
-                if ("=".equals(currentLexeme.getLexeme().split(":")[1].trim())) {
-                    if ("целочисленный литерал".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                        if (!";".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                            throw new SyntaxError(errorMessage);
-                        }
-                    }
-                }
-                else {
-                    methodAnalyzer();
-                }
-            }
-            else {
-                throw new SyntaxError(errorMessage + 2);
-            }
-        }
-        else {
-            throw new SyntaxError(errorMessage + 3);
-        }
-    }
-
     private void methodAnalyzer() throws SyntaxError {
         String errorMessage = "Ошибка синтаксиса метода";
 
-        if ("(".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-            methodParametersAnalyzer();
+        nextLexeme = getNextLexeme();
 
-            if (")".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                if ("{".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                    if (!"}".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                        throw new SyntaxError(errorMessage);
+        while ("идентификатор типа".equals(nextLexeme)) {
+            nextLexeme = getNextLexeme();
+
+            if ("идентификатор".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+
+                if ("(".equals(nextLexeme)) {
+                    nextLexeme = getNextLexeme();
+
+                    if (!")".equals(nextLexeme)) {
+                        methodParametersAnalyzer();
+
+                        if (")".equals(nextLexeme)) {
+                            nextLexeme = getNextLexeme();
+
+                            if ("{".equals(nextLexeme)) {
+                                nextLexeme = getNextLexeme();
+
+                                if (!"}".equals(nextLexeme)) {
+                                    throw new SyntaxError(errorMessage);
+                                }
+                            }
+                            else throw new SyntaxError(errorMessage);
+                        }
+                        else throw new SyntaxError(errorMessage);
+                    }
+                    else {
+                        nextLexeme = getNextLexeme();
+
+                        if ("{".equals(nextLexeme)) {
+                            nextLexeme = getNextLexeme();
+
+                            if (!"}".equals(nextLexeme)) {
+                                throw new SyntaxError(errorMessage);
+                            }
+                        }
+                        else throw new SyntaxError(errorMessage);
                     }
                 }
-                else {
-                    throw new SyntaxError(errorMessage);
-                }
+                else throw new SyntaxError(errorMessage);
             }
-            else {
-                throw new SyntaxError(errorMessage);
-            }
+            else throw new SyntaxError(errorMessage);
+
+            nextLexeme = getNextLexeme();
         }
     }
 
     private void methodParametersAnalyzer() throws SyntaxError {
-        Lexeme lexeme;
+        boolean isNextLexemeComma = true;
 
-        System.out.println("test");
+        String errorMessage = "Ошибка синтаксиса аргументов метода";
 
         do {
-            if ("идентификатор типа".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                if (!"идентификатор".equals(getNextLexeme().getLexeme().split(":")[1].trim())) {
-                    throw new SyntaxError("Ошибка синтаксиса аргументов метода");
-                }
+            if ("идентификатор типа".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+            }
+            else throw new SyntaxError(errorMessage);
+
+            if ("идентификатор".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+            }
+            else throw new SyntaxError(errorMessage);
+
+            if (",".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
             }
             else {
-                throw new SyntaxError("Ошибка синтаксиса аргументов метода");
+                isNextLexemeComma = false;
             }
 
-            lexeme = getNextLexeme();
-
-        } while (",".equals(lexeme.getLexeme().split(":")[1].trim()));
-
-        lexemes.addFirst(lexeme);
+        } while (isNextLexemeComma);
     }
 
-    private Lexeme getNextLexeme() throws SyntaxError {
+    private String getNextLexeme() throws SyntaxError {
         if (lexemes.size() > 0) {
-            return lexemes.pollFirst();
+            return lexemes.pollFirst().getLexeme();
         }
 
-        throw new SyntaxError("Список лексем пуст");
+        throw new SyntaxError("Синтаксическая ошибка");
     }
 }

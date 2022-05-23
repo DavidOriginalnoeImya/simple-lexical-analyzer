@@ -30,14 +30,16 @@ public class MainClass {
 
         List<Lexeme> lexemes = lexicalAnalyzer.getLexemes(fileContent);
 
-        for (Lexeme lexeme: lexemes) {
-            System.out.println(lexeme.getLexeme().split(":")[1].trim());
-        }
+//        for (Lexeme lexeme: lexemes) {
+//            System.out.println(lexeme.getLexeme());
+//        }
 
         SyntacticAnalyzer syntacticAnalyzer = new SyntacticAnalyzer(new ArrayDeque<>(lexemes));
 
         try {
             syntacticAnalyzer.analyze();
+
+            System.out.println("Успех");
         }
         catch (SyntaxError e) {
             System.out.println(e.getMessage());
