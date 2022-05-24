@@ -1,4 +1,10 @@
 class TestClass {
+    void func(int x, int y) {
+        int a = 1;
+        int b = 4;
+        int c = 123;
+    }
+
     void func(int x) {
 
     }

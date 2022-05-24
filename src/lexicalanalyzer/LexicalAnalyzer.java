@@ -55,7 +55,8 @@ public class LexicalAnalyzer {
         lexemeTable.put("строковый литерал", List.of("\".*?\""));
         lexemeTable.put("class", List.of("class"));
         lexemeTable.put("ключевое слово", List.of("if", "for", "while", "private", "public", "static", "main"));
-        lexemeTable.put("идентификатор типа", List.of("int *(\\[])?", "char *(\\[])?",
+        lexemeTable.put("int", List.of("int *(\\[])?"));
+        lexemeTable.put("идентификатор типа", List.of("char *(\\[])?",
                 "double *(\\[])?", "boolean *(\\[])?", "String *(\\[])?", "void"));
         lexemeTable.put("идентификатор", List.of("[a-zA-Z$_][a-zA-Z0-9_$]*"));
         lexemeTable.put("арифметический оператор", List.of("\\+", "-", "\\*", "/", "%"));

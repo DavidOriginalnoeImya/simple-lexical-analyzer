@@ -71,28 +71,14 @@ public class SyntacticAnalyzer {
                         if (")".equals(nextLexeme)) {
                             nextLexeme = getNextLexeme();
 
-                            if ("{".equals(nextLexeme)) {
-                                nextLexeme = getNextLexeme();
-
-                                if (!"}".equals(nextLexeme)) {
-                                    throw new SyntaxError(errorMessage);
-                                }
-                            }
-                            else throw new SyntaxError(errorMessage);
+                            methodBodyAnalyzer();
                         }
                         else throw new SyntaxError(errorMessage);
                     }
                     else {
                         nextLexeme = getNextLexeme();
 
-                        if ("{".equals(nextLexeme)) {
-                            nextLexeme = getNextLexeme();
-
-                            if (!"}".equals(nextLexeme)) {
-                                throw new SyntaxError(errorMessage);
-                            }
-                        }
-                        else throw new SyntaxError(errorMessage);
+                        methodBodyAnalyzer();
                     }
                 }
                 else throw new SyntaxError(errorMessage);
@@ -109,7 +95,7 @@ public class SyntacticAnalyzer {
         String errorMessage = "Ошибка синтаксиса аргументов метода";
 
         do {
-            if ("идентификатор типа".equals(nextLexeme)) {
+            if ("int".equals(nextLexeme)) {
                 nextLexeme = getNextLexeme();
             }
             else throw new SyntaxError(errorMessage);
@@ -127,6 +113,61 @@ public class SyntacticAnalyzer {
             }
 
         } while (isNextLexemeComma);
+    }
+
+    private void methodBodyAnalyzer() throws SyntaxError {
+        String errorMessage = "Синтаксическая ошибка в теле метода";
+
+        if ("{".equals(nextLexeme)) {
+            nextLexeme = getNextLexeme();
+
+            if (!"}".equals(nextLexeme)) {
+                statementsAnalyzer();
+
+                if (!"}".equals(nextLexeme)) {
+                    throw new SyntaxError(errorMessage);
+                }
+            }
+        }
+        else throw new SyntaxError(errorMessage);
+    }
+
+    private void statementsAnalyzer() throws SyntaxError {
+        String errorMessage = "Синтаксическая ошибка в объявлении переменной";
+
+        boolean isNextLexemeTypeIdent = true;
+
+        do {
+            if ("int".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+            }
+            else throw new SyntaxError(errorMessage);
+
+            if ("идентификатор".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+            }
+            else throw new SyntaxError(errorMessage);
+
+            if ("=".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+            }
+            else throw new SyntaxError(errorMessage);
+
+            if ("целочисленный литерал".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+            }
+            else throw new SyntaxError(errorMessage);
+
+            if (";".equals(nextLexeme)) {
+                nextLexeme = getNextLexeme();
+            }
+            else throw new SyntaxError(errorMessage);
+
+            if (!"int".equals(nextLexeme)) {
+                isNextLexemeTypeIdent = false;
+            }
+
+        } while (isNextLexemeTypeIdent);
     }
 
     private String getNextLexeme() throws SyntaxError {
